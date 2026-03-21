@@ -12,10 +12,37 @@ async function fetchMatchData() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const data = await response.json();
+    const contentType = response.headers.get('content-type');
+    const rawData = await response.text();
+    
+    // Check if we got HTML instead of JSON
+    if (contentType && contentType.includes('text/html')) {
+      throw new Error('Received HTML instead of JSON. GitHub may be blocking the request.');
+    }
+    
+    // Try to parse as JSON
+    let data;
+    try {
+      data = JSON.parse(rawData);
+    } catch (parseError) {
+      console.error('Raw response:', rawData.substring(0, 200));
+      throw new Error('Failed to parse JSON: ' + parseError.message);
+    }
+    
+    // Ensure data is an array or extract array from object
+    let matchesArray;
+    if (Array.isArray(data)) {
+      matchesArray = data;
+    } else if (data.data && Array.isArray(data.data)) {
+      // New structure: { metadata: {...}, data: [...] }
+      matchesArray = data.data;
+      console.log(`✓ Detected new API structure, using data.array (${matchesArray.length} matches)`);
+    } else {
+      throw new Error(`Expected array but got ${typeof data}. Data keys: ${JSON.stringify(Object.keys(data))}`);
+    }
     
     // Process and normalize data
-    const processedData = data.map(match => ({
+    const processedData = matchesArray.map(match => ({
       id: match.id || generateId(match),
       name: match.name || match.title || '',
       homeTeam: extractTeam(match.name, 0),
