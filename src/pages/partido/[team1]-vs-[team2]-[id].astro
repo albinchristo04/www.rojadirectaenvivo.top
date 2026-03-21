@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MultiIframePlayer from '../../components/MultiIframePlayer.tsx';
+import InternalLinkBlock from '../../components/InternalLinkBlock.astro';
+
+export async function getStaticPaths() {
+  try {
+    const data = await fetch('https://raw.githubusercontent.com/albinchristo04/ptv/refs/heads/main/futbollibre.json');
+    if (!data.ok) {
+      return [];
+    }
+    
+    const jsonData = await data.json();
+    
+    return jsonData.map((match: any) => {
+      const homeTeam = extractTeam(match.name, 0);
+      const awayTeam = extractTeam(match.name, 1);
+      const id = match.id || Buffer.from(match.name || match.title || Date.now().toString()).toString('base64').substring(0, 12);
+      
+      const channels = match.channels || [match.iframe || match.embed].filter(Boolean);
+      
+      return {
+        params: {
+          team1: homeTeam.toLowerCase().replace(/\s+/g, '-'),
+          team2: awayTeam.toLowerCase().replace(/\s+/g, '-'),
+          id: id
+        },
+        props: {
+          match: {
+            id,
+            homeTeam,
+            awayTeam,
+            name: match.name || match.title,
+            league: match.league || match.competition || 'Amistoso',
+            startTime: match.startTime || match.time,
+            localTime: convertToLocalTime(match.startTime || match.time),
+            channels
+          }
+        }
+      };
+    });
+  } catch (error) {
+    console.error('Error generating match pages:', error);
+    return [];
+  }
+}
+
+function extractTeam(name: string, index: number): string {
+  if (!name) return '';
+  const parts = name.split(/-|vs|VS|\|/);
+  return parts[index]?.trim() || name;
+}
+
+function convertToLocalTime(isoString: string): string {
+  if (!isoString) return '';
+  try {
+    const date = new Date(isoString);
+    return date.toLocaleString('es-ES', {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return isoString;
+  }
+}
+
+const { match } = Astro.props;
+const { team1, team2, id } = Astro.params;
+
+const title = `Ver ${match.homeTeam} vs ${match.awayTeam} En Vivo | ${match.league}`;
+const description = `Mirá ${match.homeTeam} vs ${match.awayTeam} en vivo gratis. Transmisión de ${match.league} en directo hoy ${match.localTime}.`;
+---
+
+<BaseLayout 
+  title={title} 
+  description={description}
+  noindex={true}
+>
+  <main class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Breadcrumb -->
+    <nav class="text-sm mb-4 text-gray-400">
+      <a href="/" class="hover:text-purple-400">Inicio</a> / 
+      <a href="/futbol-en-vivo" class="hover:text-purple-400">Fútbol en Vivo</a> / 
+      <span class="text-gray-500">{match.homeTeam} vs {match.awayTeam}</span>
+    </nav>
+
+    <!-- Match Header -->
+    <div class="bg-gray-800/50 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6 mb-6">
+      <div class="text-center mb-4">
+        <span class="text-xs text-purple-300 bg-purple-900/30 px-3 py-1 rounded-full">
+          {match.league}
+        </span>
+      </div>
+      
+      <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">
+        {match.homeTeam} <span class="text-purple-400">vs</span> {match.awayTeam}
+      </h1>
+      
+      <p class="text-center text-gray-400 mb-4">
+        🕐 {match.localTime}
+      </p>
+      
+      <div class="flex justify-center gap-4 text-sm">
+        <span class="text-gray-400">⚽ Fútbol en Vivo</span>
+        <span class="text-gray-400">📺 Transmisión Gratis</span>
+      </div>
+    </div>
+
+    <!-- Player Section -->
+    <div class="mb-8">
+      <MultiIframePlayer client:visible channels={match.channels} />
+    </div>
+
+    <!-- Match Info -->
+    <div class="bg-gray-800/30 rounded-lg p-6 mb-8">
+      <h2 class="text-xl font-bold mb-4">Información del Partido</h2>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="text-gray-400">Competición:</span>
+          <p class="text-purple-300 font-semibold">{match.league}</p>
+        </div>
+        <div>
+          <span class="text-gray-400">Fecha:</span>
+          <p class="text-purple-300 font-semibold">{match.localTime}</p>
+        </div>
+        <div>
+          <span class="text-gray-400">Local:</span>
+          <p class="text-purple-300 font-semibold">{match.homeTeam}</p>
+        </div>
+        <div>
+          <span class="text-gray-400">Visitante:</span>
+          <p class="text-purple-300 font-semibold">{match.awayTeam}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Content -->
+    <div class="bg-gray-800/30 rounded-lg p-6 mb-8">
+      <h2 class="text-xl font-bold mb-4">Ver {match.homeTeam} vs {match.awayTeam} En Vivo</h2>
+      <p class="text-gray-300 text-sm leading-relaxed">
+        Disfrutá del partido entre <strong class="text-purple-300">{match.homeTeam}</strong> y 
+        <strong class="text-purple-300"> {match.awayTeam}</strong> en vivo por internet. 
+        Este encuentro de <strong class="text-purple-300">{match.league}</strong> se juega hoy 
+        {match.localTime}. No te pierdas esta emocionante transmisión deportiva gratuita.
+      </p>
+    </div>
+
+    <!-- Related Matches Links -->
+    <div class="mb-8">
+      <h3 class="text-lg font-bold mb-4">Más Partidos de {match.league}</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+        <a href="/futbol-en-vivo" class="text-purple-300 hover:text-purple-200 hover:underline">
+          ⚽ Ver todo el fútbol en vivo
+        </a>
+        <a href="/rojadirecta-en-vivo" class="text-purple-300 hover:text-purple-200 hover:underline">
+          📺 Rojadirecta
+        </a>
+        <a href="/tarjeta-roja-hoy" class="text-purple-300 hover:text-purple-200 hover:underline">
+          🔴 Tarjeta Roja
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer Internal Links -->
+    <InternalLinkBlock variant="footer" />
+  </main>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    "name": `${match.homeTeam} vs ${match.awayTeam}`,
+    "startDate": match.startTime,
+    "competition": {
+      "@type": "SportsLeague",
+      "name": match.league
+    },
+    "homeTeam": {
+      "@type": "SportsTeam",
+      "name": match.homeTeam
+    },
+    "awayTeam": {
+      "@type": "SportsTeam",
+      "name": match.awayTeam
+    },
+    "description": description
+  })} />
+</BaseLayout>

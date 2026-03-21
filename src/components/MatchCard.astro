@@ -1,0 +1,78 @@
+---
+interface Team {
+  name: string;
+}
+
+interface Match {
+  id: string;
+  homeTeam: string;
+  awayTeam: string;
+  league: string;
+  localTime: string;
+  startTime: string;
+  channels: string[];
+}
+
+interface Props {
+  match: Match;
+}
+
+const { match } = Astro.props;
+
+const matchUrl = `/partido/${match.homeTeam.toLowerCase().replace(/\s+/g, '-')}-vs-${match.awayTeam.toLowerCase().replace(/\s+/g, '-')}-${match.id}`;
+---
+
+<div class="bg-gray-800/50 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4 hover:border-purple-500 transition-all duration-300">
+  <div class="flex justify-between items-start mb-3">
+    <span class="text-xs text-purple-300 bg-purple-900/30 px-2 py-1 rounded">
+      {match.league}
+    </span>
+    <span class="text-xs text-gray-400">
+      {match.localTime}
+    </span>
+  </div>
+  
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex-1 text-center">
+      <h3 class="font-bold text-lg text-white truncate">{match.homeTeam}</h3>
+    </div>
+    <div class="px-3 text-gray-500 text-sm">VS</div>
+    <div class="flex-1 text-center">
+      <h3 class="font-bold text-lg text-white truncate">{match.awayTeam}</h3>
+    </div>
+  </div>
+  
+  <div class="flex gap-2">
+    <a 
+      href={matchUrl}
+      class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-2 px-4 rounded transition-all duration-300 text-center text-sm"
+    >
+      Ver Partido
+    </a>
+    {match.channels.length > 1 && (
+      <span class="bg-yellow-600/30 text-yellow-300 px-3 py-2 rounded text-xs font-semibold border border-yellow-500/50">
+        {match.channels.length} Canales
+      </span>
+    )}
+  </div>
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    "name": `${match.homeTeam} vs ${match.awayTeam}`,
+    "startDate": match.startTime,
+    "competition": {
+      "@type": "SportsLeague",
+      "name": match.league
+    },
+    "homeTeam": {
+      "@type": "SportsTeam",
+      "name": match.homeTeam
+    },
+    "awayTeam": {
+      "@type": "SportsTeam",
+      "name": match.awayTeam
+    }
+  })} />
+</div>

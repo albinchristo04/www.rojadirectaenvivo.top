@@ -1,0 +1,133 @@
+---
+interface Props {
+  variant?: 'header' | 'footer' | 'sidebar';
+}
+
+const { variant = 'footer' } = Astro.props;
+
+// Core SEO keywords - high volume Spanish streaming terms
+const coreKeywords = [
+  { text: 'Rojadirecta en vivo', url: '/rojadirecta-en-vivo' },
+  { text: 'Tarjeta roja hoy', url: '/tarjeta-roja-hoy' },
+  { text: 'Pirlo TV', url: '/pirlo-tv-en-vivo' },
+  { text: 'Fútbol en vivo gratis', url: '/futbol-en-vivo' },
+  { text: 'Ver fútbol online', url: '/ver-futbol-online' },
+  { text: 'Partidos de hoy', url: '/partidos-de-hoy' },
+  { text: 'Fútbol libre', url: '/futbol-libre' },
+  { text: 'Deportes en vivo', url: '/deportes-en-vivo' },
+];
+
+// Long-tail variations
+const longTailKeywords = [
+  'rojadirecta real madrid vs barcelona',
+  'tarjeta roja partidos de hoy',
+  'ver futbol en vivo gratis hoy',
+  'pirlo tv champions league',
+  'futbol en vivo la liga',
+  'rojadirecta premier league',
+  'ver deportes gratis online',
+  'transmision de futbol en vivo',
+  'futbol europeo en vivo',
+  'copa libertadores en vivo',
+  'champions league en vivo gratis',
+  'premier league en español',
+  'serie a en vivo',
+  'bundesliga en vivo',
+  'ligue 1 en vivo',
+  'mundial de clubes en vivo',
+  'eurocopa en vivo',
+  'copa america en vivo',
+  'eliminatorias mundial en vivo',
+  'liga mx en vivo',
+  'primera division argentina en vivo',
+  'brasileirao en vivo',
+  'mls en vivo',
+  'eredivisie en vivo',
+  'primeira liga en vivo',
+  'championship en vivo',
+  'fa cup en vivo',
+  'copa del rey en vivo',
+  'supercopa europea en vivo',
+  'uefa nations league en vivo',
+  'concacaf champions league en vivo',
+  'copa sudamericana en vivo',
+  'recopa sudamericana en vivo',
+  'coppa italia en vivo',
+  'dfb pokal en vivo',
+  'coupe de france en vivo',
+  'fa cup en vivo gratis',
+  'carabao cup en vivo',
+  'community shield en vivo',
+  'supercopa italiana en vivo',
+  'supercopa alemana en vivo',
+  'supercopa francesa en vivo',
+  'ajax en vivo',
+  'psv en vivo',
+  'feyenoord en vivo',
+  'benfica en vivo',
+  'porto en vivo',
+  'sporting en vivo',
+  'celtic en vivo',
+  'rangers en vivo',
+  'galatasaray en vivo',
+  'fenerbahce en vivo',
+  'besiktas en vivo',
+  'shakhtar donetsk en vivo',
+  'dynamo kiev en vivo',
+  'anderlecht en vivo',
+  'club brugge en vivo',
+  'standard lieja en vivo',
+  'basel en vivo',
+  'young boys en vivo',
+  'salzburg en vivo',
+  'rapid viena en vivo',
+  'sparta praga en vivo',
+  'slavia praga en vivo',
+  'legia varsovia en vivo',
+  'estrella roja en vivo',
+  'partizan belgrado en vivo',
+  'olimpiacos en vivo',
+  'panathinaikos en vivo',
+  'aeK atenas en vivo',
+  'copenhague en vivo',
+  'brondby en vivo',
+  'malmo en vivo',
+  'rosenborg en vivo',
+  'molde en vivo',
+  'juventud en vivo',
+  'midtjylland en vivo',
+].map(kw => ({
+  text: kw.charAt(0).toUpperCase() + kw.slice(1),
+  url: `/${kw.replace(/\s+/g, '-')}`
+}));
+
+const displayLinks = variant === 'footer' ? [...coreKeywords, ...longTailKeywords] : coreKeywords;
+---
+
+<div class={`internal-links ${variant === 'footer' ? 'border-t border-purple-500/30 pt-6 mt-8' : 'my-4'}`}>
+  {variant === 'header' && (
+    <h2 class="text-sm font-semibold text-purple-300 mb-2">Enlaces Destacados</h2>
+  )}
+  
+  <div class={`grid gap-2 ${
+    variant === 'footer' 
+      ? 'grid-cols-2 md:grid-cols-4 lg:grid-cols-6' 
+      : variant === 'header'
+      ? 'grid-cols-2 md:grid-cols-4'
+      : 'grid-cols-1 md:grid-cols-2'
+  }`}>
+    {displayLinks.map((link, i) => (
+      <a
+        href={link.url}
+        class={`text-xs hover:text-purple-400 transition-colors ${
+          variant === 'footer' 
+            ? 'text-gray-400 hover:underline' 
+            : 'text-purple-300 hover:text-purple-200'
+        }`}
+        title={link.text}
+      >
+        {link.text}
+      </a>
+    ))}
+  </div>
+</div>

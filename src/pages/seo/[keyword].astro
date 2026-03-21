@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MatchCard from '../../components/MatchCard.astro';
+import InternalLinkBlock from '../../components/InternalLinkBlock.astro';
+
+export async function getStaticPaths() {
+  // Define core SEO keyword pages
+  return [
+    {
+      params: { keyword: 'rojadirecta-en-vivo' },
+      props: {
+        title: 'Rojadirecta En Vivo',
+        heading: '📺 Rojadirecta En Vivo | Ver Fútbol Gratis Hoy',
+        description: 'Mirá fútbol en vivo gratis en Rojadirecta. Todos los partidos de hoy, transmisiones en español, sin registro. ¡Entrá ya!',
+        intro: `
+          <p class="mb-4">
+            Bienvenido a <strong class="text-purple-300">Rojadirecta En Vivo</strong>, la mejor opción para ver fútbol en vivo gratis. 
+            Aquí encontrarás todas las transmisiones deportivas en español, completamente gratis y sin necesidad de registro.
+          </p>
+          <p class="mb-4">
+            Nuestra plataforma ofrece enlaces a múltiples señales para que puedas disfrutar de tus equipos favoritos. 
+            Transmitimos partidos de <strong class="text-purple-300">La Liga</strong>, <strong class="text-purple-300">Premier League</strong>, 
+            <strong class="text-purple-300">Serie A</strong>, <strong class="text-purple-300">Bundesliga</strong>, 
+            <strong class="text-purple-300">Champions League</strong> y mucho más.
+          </p>
+          <p>
+            ¿Por qué elegirnos? Porque somos rápidos, confiables y 100% gratuitos. Solo tenés que hacer clic en el partido 
+            que querés ver y disfrutar del mejor fútbol europeo y sudamericano.
+          </p>
+        `
+      }
+    },
+    {
+      params: { keyword: 'tarjeta-roja-hoy' },
+      props: {
+        title: 'Tarjeta Roja Hoy | Ver Partidos En Vivo',
+        heading: '🔴 Tarjeta Roja Hoy | Fútbol En Vivo Gratis',
+        description: 'Tarjeta Roja hoy - Mirá todos los partidos de hoy en vivo. Transmisiones gratuitas de fútbol en español.',
+        intro: `
+          <p class="mb-4">
+            <strong class="text-purple-300">Tarjeta Roja</strong> es tu sitio de confianza para ver fútbol en vivo hoy. 
+            Ofrecemos todas las transmisiones deportivas del día, con múltiples señales para cada partido.
+          </p>
+          <p class="mb-4">
+            Accedé a partidos de todas las ligas importantes: <strong class="text-purple-300">Liga de España</strong>, 
+            <strong class="text-purple-300">Premier League inglesa</strong>, <strong class="text-purple-300">Serie A italiana</strong>, 
+            <strong class="text-purple-300">Bundesliga alemana</strong> y las competiciones internacionales más importantes.
+          </p>
+          <p>
+            Nuestro servicio es completamente gratuito y no requiere descarga. Solo seleccioná el partido que querés ver 
+            y disfrutá de la mejor calidad en transmisiones deportivas.
+          </p>
+        `
+      }
+    },
+    {
+      params: { keyword: 'pirlo-tv-en-vivo' },
+      props: {
+        title: 'Pirlo TV En Vivo | Ver Fútbol Online',
+        heading: '⚽ Pirlo TV En Vivo | Transmisiones Deportivas',
+        description: 'Pirlo TV en vivo - La mejor programación deportiva. Mirá fútbol gratis online con todas las ligas europeas.',
+        intro: `
+          <p class="mb-4">
+            <strong class="text-purple-300">Pirlo TV</strong> te trae la mejor programación deportiva las 24 horas. 
+            Disfrutá de fútbol en vivo, resúmenes, goles y toda la acción de tus equipos favoritos.
+          </p>
+          <p class="mb-4">
+            Encontrarás partidos de <strong class="text-purple-300">Champions League</strong>, 
+            <strong class="text-purple-300">Europa League</strong>, <strong class="text-purple-300">La Liga</strong>, 
+            <strong class="text-purple-300">Premier League</strong> y todos los torneos locales de Latinoamérica.
+          </p>
+          <p>
+            La calidad de nuestras transmisiones es excelente y no necesitas registrarte. Simplemente elegí el partido 
+            y empezá a disfrutar del mejor fútbol mundial.
+          </p>
+        `
+      }
+    },
+    {
+      params: { keyword: 'futbol-en-vivo' },
+      props: {
+        title: 'Fútbol En Vivo | Ver Partidos Gratis Hoy',
+        heading: '⚽ Fútbol En Vivo Gratis | Todos los Partidos de Hoy',
+        description: 'Ver fútbol en vivo gratis. Todos los partidos de hoy, mañana y siempre. Transmisiones en español sin costo.',
+        intro: `
+          <p class="mb-4">
+            El mejor lugar para <strong class="text-purple-300">ver fútbol en vivo gratis</strong>. 
+            Transmitimos todos los días del año, con la más amplia cobertura de ligas europeas y torneos sudamericanos.
+          </p>
+          <p class="mb-4">
+            Disfrutá de Real Madrid, Barcelona, Manchester United, Liverpool, Juventus, Bayern Munich, Boca Juniors, 
+            River Plate, Flamengo y todos los grandes clubes del mundo en acción.
+          </p>
+          <p>
+            Nuestras transmisiones son en alta calidad, sin cortes y completamente gratuitas. 
+            No te pierdas ningún gol, ninguna jugada, ninguna emoción del fútbol mundial.
+          </p>
+        `
+      }
+    },
+    {
+      params: { keyword: 'ver-futbol-online' },
+      props: {
+        title: 'Ver Fútbol Online | Transmisiones en Vivo',
+        heading: '📺 Ver Fútbol Online Gratis | Calidad HD',
+        description: 'Ver fútbol online en vivo y gratis. Las mejores transmisiones deportivas por internet. Sin registros ni pagos.',
+        intro: `
+          <p class="mb-4">
+            Ahora podés <strong class="text-purple-300">ver fútbol online</strong> de forma completamente gratuita. 
+            Nuestra plataforma te conecta con las mejores señales deportivas del mundo.
+          </p>
+          <p class="mb-4">
+            Ofrecemos cobertura completa de:
+          </p>
+          <ul class="list-disc list-inside mb-4 text-gray-300 space-y-1">
+            <li>⭐ Champions League - La copa de las copas</li>
+            <li>⭐ Premier League - El mejor fútbol de Inglaterra</li>
+            <li>⭐ La Liga - Real Madrid vs Barcelona</li>
+            <li>⭐ Serie A - El calcio italiano</li>
+            <li>⭐ Bundesliga - Fútbol alemán de primer nivel</li>
+            <li>⭐ Libertadores - La gloria sudamericana</li>
+          </ul>
+          <p>
+            Todo esto sin costo alguno, sin registros molestos y con la mejor calidad de streaming.
+          </p>
+        `
+      }
+    },
+    {
+      params: { keyword: 'partidos-de-hoy' },
+      props: {
+        title: 'Partidos de Hoy | Fútbol En Vivo Hoy',
+        heading: '🔥 Partidos de Hoy | Fútbol En Vivo Ahora',
+        description: 'Los partidos de hoy en vivo. Mirá todos los encuentros programados para hoy. Transmisiones gratuitas.',
+        intro: `
+          <p class="mb-4">
+            Acá encontrás todos los <strong class="text-purple-300">partidos de hoy</strong>. 
+            La agenda más completa de fútbol en vivo, con horarios y canales disponibles.
+          </p>
+          <p class="mb-4">
+            Cada día actualizamos nuestra programación para que sepas exactamente qué se juega hoy. 
+            Desde las primeras horas de la mañana hasta la madrugada, siempre hay fútbol en vivo esperándote.
+          </p>
+          <p>
+            No te pierdas ningún detalle. Selección tu partido favorito y disfrutá de la transmisión 
+            más completa y confiable de internet.
+          </p>
+        `
+      }
+    }
+  ];
+}
+
+const { keyword } = Astro.params;
+const { title, heading, description, intro } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Hero -->
+    <section class="mb-8">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        {heading}
+      </h1>
+      
+      <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
+        <div class="text-gray-300 leading-relaxed" set:html={intro}></div>
+      </div>
+    </section>
+
+    <!-- Featured Matches Placeholder -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+        <span class="text-purple-400">⚽</span> Partidos Destacados
+      </h2>
+      
+      <div class="bg-gray-800/50 rounded-lg p-8 text-center">
+        <p class="text-gray-400 mb-4">Los partidos se cargarán aquí automáticamente</p>
+        <a href="/" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
+          Ver Todos los Partidos en la Homepage
+        </a>
+      </div>
+    </section>
+
+    <!-- Additional SEO Content -->
+    <section class="bg-gray-800/30 rounded-lg p-6 mb-8">
+      <h2 class="text-xl font-bold mb-4">¿Cómo Ver Fútbol En Vivo Gratis?</h2>
+      <div class="space-y-3 text-gray-300 text-sm">
+        <p>
+          Es muy sencillo. Solo seguís estos pasos:
+        </p>
+        <ol class="list-decimal list-inside space-y-2 ml-4">
+          <li>Elegís el partido que querés ver de la lista de arriba</li>
+          <li>Hacés clic en "Ver Partido"</li>
+          <li>Se abrirá la página con el reproductor</li>
+          <li>Seleccionás el canal que preferís (si hay varios)</li>
+          <li>¡Y listo! A disfrutar del mejor fútbol</li>
+        </ol>
+        <p class="mt-4">
+          No necesitás descargar nada, ni registrarte, ni pagar. Es 100% gratuito y seguro.
+        </p>
+      </div>
+    </section>
+
+    <!-- Internal Link Block (Aggressive SEO) -->
+    <InternalLinkBlock variant="footer" />
+  </main>
+</BaseLayout>

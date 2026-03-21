@@ -1,0 +1,8 @@
+[builds]
+command = "npm run build"
+publish = "dist"
+
+[[redirects]]
+from = "/partido/*"
+to = "/index.html"
+status = 200

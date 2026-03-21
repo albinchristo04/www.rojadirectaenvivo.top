@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /partido/
+
+Sitemap: https://rojadirectaenvivo.top/sitemap-index.xml

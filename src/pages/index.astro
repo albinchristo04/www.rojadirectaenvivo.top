@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MatchCard from '../components/MatchCard.astro';
+import InternalLinkBlock from '../components/InternalLinkBlock.astro';
+
+// Fetch match data at build time
+let matches = [];
+try {
+  const data = await fetch('https://raw.githubusercontent.com/albinchristo04/ptv/refs/heads/main/futbollibre.json');
+  if (data.ok) {
+    const jsonData = await data.json();
+    matches = jsonData.map((match: any) => ({
+      id: match.id || Buffer.from(match.name || match.title || Date.now().toString()).toString('base64').substring(0, 12),
+      homeTeam: extractTeam(match.name, 0),
+      awayTeam: extractTeam(match.name, 1),
+      league: match.league || match.competition || 'Amistoso',
+      localTime: convertToLocalTime(match.startTime || match.time),
+      startTime: match.startTime || match.time,
+      channels: match.channels || [match.iframe || match.embed].filter(Boolean),
+    }));
+  }
+} catch (error) {
+  console.error('Error loading matches:', error);
+}
+
+function extractTeam(name: string, index: number): string {
+  if (!name) return '';
+  const parts = name.split(/-|vs|VS|\|/);
+  return parts[index]?.trim() || name;
+}
+
+function convertToLocalTime(isoString: string): string {
+  if (!isoString) return '';
+  try {
+    const date = new Date(isoString);
+    return date.toLocaleString('es-ES', {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return isoString;
+  }
+}
+
+const today = new Date().toLocaleDateString('es-ES', { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric' 
+});
+---
+
+<BaseLayout title="Rojadirecta En Vivo | Ver Fútbol Gratis Hoy - Partidos de Hoy">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-purple-500/30">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          📺 Rojadirecta En Vivo
+        </h1>
+        <nav class="hidden md:flex gap-4">
+          <a href="/rojadirecta-en-vivo" class="text-purple-300 hover:text-purple-200 transition-colors">Rojadirecta</a>
+          <a href="/tarjeta-roja-hoy" class="text-purple-300 hover:text-purple-200 transition-colors">Tarjeta Roja</a>
+          <a href="/pirlo-tv-en-vivo" class="text-purple-300 hover:text-purple-200 transition-colors">Pirlo TV</a>
+          <a href="/futbol-en-vivo" class="text-purple-300 hover:text-purple-200 transition-colors">Fútbol en Vivo</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <section class="mb-8">
+      <h2 class="text-3xl md:text-4xl font-bold mb-2 text-center">
+        ⚽ Fútbol En Vivo Gratis Hoy
+      </h2>
+      <p class="text-gray-400 text-center mb-4">
+        {today} - Ver partidos en vivo por internet
+      </p>
+      
+      <InternalLinkBlock variant="header" />
+    </section>
+
+    <!-- Today's Matches -->
+    <section class="mb-12">
+      <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+        <span class="text-purple-400">🔥</span> Partidos de Hoy
+      </h3>
+      
+      {matches.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {matches.map((match) => (
+            <MatchCard match={match} />
+          ))}
+        </div>
+      ) : (
+        <div class="bg-gray-800/50 rounded-lg p-8 text-center">
+          <p class="text-gray-400 mb-2">No hay partidos programados para hoy</p>
+          <p class="text-sm text-gray-500">Vuelve más tarde para ver la actualización</p>
+        </div>
+      )}
+    </section>
+
+    <!-- SEO Content Block -->
+    <section class="bg-gray-800/30 rounded-lg p-6 mb-8">
+      <h3 class="text-xl font-bold mb-4">Ver Fútbol En Vivo Gratis</h3>
+      <div class="text-gray-300 space-y-3 text-sm leading-relaxed">
+        <p>
+          Bienvenido a <strong class="text-purple-300">Rojadirecta En Vivo</strong>, tu mejor opción para ver fútbol en vivo gratis. 
+          Transmitimos todos los partidos de hoy de las principales ligas europeas y torneos internacionales.
+        </p>
+        <p>
+          Disfruta de <strong class="text-purple-300">La Liga</strong>, <strong class="text-purple-300">Premier League</strong>, 
+          <strong class="text-purple-300">Serie A</strong>, <strong class="text-purple-300">Bundesliga</strong>, 
+          <strong class="text-purple-300">Champions League</strong>, <strong class="text-purple-300">Europa League</strong> 
+          y mucho más. También encontrarás partidos de la <strong class="text-purple-300">Liga MX</strong>, 
+          <strong class="text-purple-300">Primera División Argentina</strong>, <strong class="text-purple-300">Brasileirão</strong> 
+          y las <strong class="text-purple-300">Eliminatorias Mundial</strong>.
+        </p>
+        <p>
+          Nuestra plataforma es completamente gratuita y no requiere registro. Solo haz clic en el partido que quieres ver 
+          y disfruta de la mejor transmisión en vivo en español.
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer Internal Links (Aggressive SEO) -->
+    <InternalLinkBlock variant="footer" />
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-purple-500/30 mt-12 py-8">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-gray-500 text-sm">
+        © 2026 Rojadirecta En Vivo. Todos los derechos reservados.
+      </p>
+      <p class="text-xs text-gray-600 mt-2">
+        Este sitio no aloja ningún contenido de video. Todos los videos están alojados en servidores de terceros.
+      </p>
+    </div>
+  </footer>
+</BaseLayout>
