@@ -9,15 +9,27 @@ try {
   const data = await fetch('https://raw.githubusercontent.com/albinchristo04/ptv/refs/heads/main/futbollibre.json');
   if (data.ok) {
     const jsonData = await data.json();
-    matches = jsonData.map((match: any) => ({
-      id: match.id || Buffer.from(match.name || match.title || Date.now().toString()).toString('base64').substring(0, 12),
-      homeTeam: extractTeam(match.name, 0),
-      awayTeam: extractTeam(match.name, 1),
-      league: match.league || match.competition || 'Amistoso',
-      localTime: convertToLocalTime(match.startTime || match.time),
-      startTime: match.startTime || match.time,
-      channels: match.channels || [match.iframe || match.embed].filter(Boolean),
-    }));
+    
+    // Handle both old and new API structures
+    let matchesArray;
+    if (Array.isArray(jsonData)) {
+      matchesArray = jsonData;
+    } else if (jsonData.data && Array.isArray(jsonData.data)) {
+      // New structure: { metadata: {...}, data: [...] }
+      matchesArray = jsonData.data;
+    }
+    
+    if (matchesArray) {
+      matches = matchesArray.map((match: any) => ({
+        id: match.id || Buffer.from(match.name || match.title || Date.now().toString()).toString('base64').substring(0, 12),
+        homeTeam: extractTeam(match.name, 0),
+        awayTeam: extractTeam(match.name, 1),
+        league: match.league || match.competition || 'Amistoso',
+        localTime: convertToLocalTime(match.startTime || match.time),
+        startTime: match.startTime || match.time,
+        channels: match.channels || [match.iframe || match.embed].filter(Boolean),
+      }));
+    }
   }
 } catch (error) {
   console.error('Error loading matches:', error);

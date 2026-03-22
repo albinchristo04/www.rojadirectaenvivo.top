@@ -12,7 +12,19 @@ export async function getStaticPaths() {
     
     const jsonData = await data.json();
     
-    return jsonData.map((match: any) => {
+    // Handle both old and new API structures
+    let matchesArray;
+    if (Array.isArray(jsonData)) {
+      matchesArray = jsonData;
+    } else if (jsonData.data && Array.isArray(jsonData.data)) {
+      // New structure: { metadata: {...}, data: [...] }
+      matchesArray = jsonData.data;
+    } else {
+      console.error('Unexpected JSON structure:', Object.keys(jsonData));
+      return [];
+    }
+    
+    return matchesArray.map((match: any) => {
       const homeTeam = extractTeam(match.name, 0);
       const awayTeam = extractTeam(match.name, 1);
       const id = match.id || Buffer.from(match.name || match.title || Date.now().toString()).toString('base64').substring(0, 12);
