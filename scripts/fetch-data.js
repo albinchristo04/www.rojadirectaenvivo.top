@@ -1,4 +1,4 @@
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -54,6 +54,12 @@ async function fetchMatchData() {
       decodedIframeUrl: match.decoded_iframe_url || match.iframe || '',
       status: match.status || 'scheduled'
     }));
+    
+    // Ensure data directory exists
+    const dataDir = join(__dirname, '..', 'data');
+    if (!existsSync(dataDir)) {
+      mkdirSync(dataDir, { recursive: true });
+    }
     
     // Save to data directory
     const outputPath = join(__dirname, '..', 'data', 'matches.json');
